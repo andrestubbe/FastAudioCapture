@@ -64,8 +64,8 @@ public class FastAudioCapture {
     private static native boolean isRecording(long handle);
     private static native boolean saveToFile(long handle, String filePath);
     private static native float getLevel(long handle);
-    private static native String[] getCaptureDevices();
-    private static native String getDefaultDevice();
+    private static native String[] nativeGetCaptureDevices();
+    private static native String nativeGetDefaultDevice();
     
     /**
      * Audio capture callback interface.
@@ -179,7 +179,7 @@ public class FastAudioCapture {
      * @return Array of device IDs
      */
     public static String[] getCaptureDevices() {
-        return getCaptureDevices();
+        return nativeGetCaptureDevices();
     }
     
     /**
@@ -187,7 +187,7 @@ public class FastAudioCapture {
      * @return Default device ID
      */
     public static String getDefaultDevice() {
-        return getDefaultDevice();
+        return nativeGetDefaultDevice();
     }
     
     /**
@@ -206,12 +206,4 @@ public class FastAudioCapture {
         }
     }
     
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            close();
-        } finally {
-            super.finalize();
-        }
-    }
 }

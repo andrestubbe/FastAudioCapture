@@ -56,7 +56,7 @@ JNIEXPORT jfloat JNICALL Java_fastaudio_FastAudioCapture_getLevel(JNIEnv* env, j
     return 0.0f;
 }
 
-JNIEXPORT jobjectArray JNICALL Java_fastaudio_FastAudioCapture_getCaptureDevices(JNIEnv* env, jclass clazz) {
+JNIEXPORT jobjectArray JNICALL Java_fastaudio_FastAudioCapture_nativeGetCaptureDevices(JNIEnv* env, jclass clazz) {
     jobjectArray result = env->NewObjectArray(2, env->FindClass("java/lang/String"), nullptr);
     jstring micDevice = env->NewStringUTF("Microphone");
     jstring loopDevice = env->NewStringUTF("System Audio (Loopback)");
@@ -67,7 +67,7 @@ JNIEXPORT jobjectArray JNICALL Java_fastaudio_FastAudioCapture_getCaptureDevices
     return result;
 }
 
-JNIEXPORT jstring JNICALL Java_fastaudio_FastAudioCapture_getDefaultDevice(JNIEnv* env, jclass clazz) {
+JNIEXPORT jstring JNICALL Java_fastaudio_FastAudioCapture_nativeGetDefaultDevice(JNIEnv* env, jclass clazz) {
     return env->NewStringUTF("Microphone");
 }
 

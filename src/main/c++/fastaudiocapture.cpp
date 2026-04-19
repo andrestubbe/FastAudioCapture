@@ -89,21 +89,19 @@ struct AudioCapture {
         }
     }
     
-    // Calculate RMS level from audio data
+    // Calculate RMS level from 32-bit float audio data (WASAPI format)
     void calculateLevel(const BYTE* data, UINT32 numFrames) {
-        if (bitsPerSample == 16) {
-            const short* samples = reinterpret_cast<const short*>(data);
-            int totalSamples = numFrames * channels;
-            
-            float sum = 0.0f;
-            for (int i = 0; i < totalSamples; i++) {
-                float sample = samples[i] / 32768.0f;
-                sum += sample * sample;
-            }
-            
-            float rms = sqrt(sum / totalSamples);
-            currentLevel = rms;
+        const float* samples = reinterpret_cast<const float*>(data);
+        int totalSamples = numFrames * channels;
+        
+        float sum = 0.0f;
+        for (int i = 0; i < totalSamples; i++) {
+            float sample = samples[i];
+            sum += sample * sample;
         }
+        
+        float rms = sqrt(sum / totalSamples);
+        currentLevel = rms;
     }
 };
 
@@ -172,19 +170,37 @@ void CaptureThread(AudioCapture* capture) {
             if (blockAlign == 0) blockAlign = 4; // default to 16-bit stereo
             UINT32 bytesToCopy = packetLength * blockAlign;
             
-            // Calculate level
+            // Calculate level and copy/convert data
             if (!(flags & AUDCLNT_BUFFERFLAGS_SILENT) && bytesToCopy > 0) {
                 capture->calculateLevel(pData, packetLength);
                 
-                // Copy data
-                size_t currentSize = capture->recordedData.size();
-                capture->recordedData.resize(currentSize + bytesToCopy);
-                memcpy(capture->recordedData.data() + currentSize, pData, bytesToCopy);
+                // Check if we need to convert 32-bit float to 16-bit PCM
+                if (capture->waveFormat.wBitsPerSample == 32) {
+                    // Convert float to 16-bit PCM
+                    const float* floatData = reinterpret_cast<const float*>(pData);
+                    UINT32 numSamples = packetLength * capture->waveFormat.nChannels;
+                    size_t currentSize = capture->recordedData.size();
+                    capture->recordedData.resize(currentSize + (numSamples * 2));
+                    short* pcmData = reinterpret_cast<short*>(capture->recordedData.data() + currentSize);
+                    
+                    for (UINT32 i = 0; i < numSamples; i++) {
+                        float sample = floatData[i];
+                        if (sample > 1.0f) sample = 1.0f;
+                        if (sample < -1.0f) sample = -1.0f;
+                        pcmData[i] = static_cast<short>(sample * 32767.0f);
+                    }
+                } else {
+                    // Copy as-is (already 16-bit PCM)
+                    size_t currentSize = capture->recordedData.size();
+                    capture->recordedData.resize(currentSize + bytesToCopy);
+                    memcpy(capture->recordedData.data() + currentSize, pData, bytesToCopy);
+                }
             } else if (bytesToCopy > 0) {
-                // Silent frame - add silence to buffer
+                // Silent frame - add silence to buffer (16-bit PCM size)
+                UINT32 numSamples = packetLength * capture->waveFormat.nChannels;
                 size_t currentSize = capture->recordedData.size();
-                capture->recordedData.resize(currentSize + bytesToCopy);
-                memset(capture->recordedData.data() + currentSize, 0, bytesToCopy);
+                capture->recordedData.resize(currentSize + (numSamples * 2));
+                memset(capture->recordedData.data() + currentSize, 0, numSamples * 2);
                 capture->currentLevel = 0.0f;
             }
             
@@ -199,13 +215,27 @@ void CaptureThread(AudioCapture* capture) {
     }
 }
 
-// Write WAV file
+// Write WAV file - converts 32-bit float to 16-bit PCM for compatibility
 bool WriteWavFile(const wchar_t* filePath, const std::vector<BYTE>& audioData, const WAVEFORMATEX& format) {
     HANDLE hFile = CreateFileW(filePath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (hFile == INVALID_HANDLE_VALUE) return false;
     
+    // Prepare 16-bit PCM format
+    WAVEFORMATEX outFormat;
+    outFormat.wFormatTag = WAVE_FORMAT_PCM;
+    outFormat.nChannels = format.nChannels;
+    outFormat.nSamplesPerSec = format.nSamplesPerSec;
+    outFormat.wBitsPerSample = 16;
+    outFormat.nBlockAlign = outFormat.nChannels * 2;
+    outFormat.nAvgBytesPerSec = outFormat.nSamplesPerSec * outFormat.nBlockAlign;
+    outFormat.cbSize = 0;
+    
+    // Data is already converted to 16-bit PCM in capture thread
+    // Just use it directly
+    const std::vector<BYTE>& outData = audioData;
+    
     DWORD bytesWritten;
-    DWORD dataSize = static_cast<DWORD>(audioData.size());
+    DWORD dataSize = static_cast<DWORD>(outData.size());
     DWORD riffSize = 36 + dataSize;
     
     // Write RIFF header
@@ -217,17 +247,17 @@ bool WriteWavFile(const wchar_t* filePath, const std::vector<BYTE>& audioData, c
     WriteFile(hFile, "fmt ", 4, &bytesWritten, nullptr);
     DWORD fmtSize = 16;
     WriteFile(hFile, &fmtSize, 4, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.wFormatTag, 2, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.nChannels, 2, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.nSamplesPerSec, 4, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.nAvgBytesPerSec, 4, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.nBlockAlign, 2, &bytesWritten, nullptr);
-    WriteFile(hFile, &format.wBitsPerSample, 2, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.wFormatTag, 2, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.nChannels, 2, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.nSamplesPerSec, 4, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.nAvgBytesPerSec, 4, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.nBlockAlign, 2, &bytesWritten, nullptr);
+    WriteFile(hFile, &outFormat.wBitsPerSample, 2, &bytesWritten, nullptr);
     
     // Write data chunk
     WriteFile(hFile, "data", 4, &bytesWritten, nullptr);
     WriteFile(hFile, &dataSize, 4, &bytesWritten, nullptr);
-    WriteFile(hFile, audioData.data(), dataSize, &bytesWritten, nullptr);
+    WriteFile(hFile, outData.data(), dataSize, &bytesWritten, nullptr);
     
     CloseHandle(hFile);
     return bytesWritten == dataSize;
@@ -238,8 +268,9 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_fastaudio_FastAudioCapture_createCapture(JNIEnv* env, jclass clazz) {
     AudioCapture* capture = new AudioCapture();
     
+    // Initialize COM - S_FALSE is also OK (already initialized)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    if (FAILED(hr)) {
+    if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) {
         delete capture;
         return 0;
     }
@@ -247,6 +278,7 @@ JNIEXPORT jlong JNICALL Java_fastaudio_FastAudioCapture_createCapture(JNIEnv* en
     // Create stop event
     capture->stopEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (!capture->stopEvent) {
+        CoUninitialize();
         delete capture;
         return 0;
     }
@@ -261,6 +293,8 @@ JNIEXPORT jlong JNICALL Java_fastaudio_FastAudioCapture_createCapture(JNIEnv* en
     );
     
     if (FAILED(hr)) {
+        CloseHandle(capture->stopEvent);
+        CoUninitialize();
         delete capture;
         return 0;
     }
@@ -323,7 +357,6 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
         );
     } else {
         // Try to find device by name
-                capture->deviceEnumerator, dataFlow, stateMask);
         IMMDeviceCollection* devices = nullptr;
         if (!capture->deviceEnumerator) {
             return JNI_FALSE;
@@ -397,6 +430,9 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
     REFERENCE_TIME bufferDuration = 10000000; // 1 second
     DWORD streamFlags = capture->isLoopback ? AUDCLNT_STREAMFLAGS_LOOPBACK : 0;
     
+    fprintf(stderr, "[DEBUG] Format: Tag=%d, Bits=%d, Align=%d\n",
+            capture->waveFormat.wFormatTag, capture->waveFormat.wBitsPerSample, capture->waveFormat.nBlockAlign);
+    fprintf(stderr, "[DEBUG] Initializing audio client: %dHz, %dch, %dbits (mix format), loopback=%d\n",
             capture->sampleRate, capture->channels, capture->bitsPerSample, capture->isLoopback);
     
     hr = capture->audioClient->Initialize(

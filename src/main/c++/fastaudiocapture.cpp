@@ -45,13 +45,15 @@ struct AudioCapture {
     
     ~AudioCapture() {
         stopRecording();
-        releaseResources();
+        releaseAll();
         if (stopEvent) {
             CloseHandle(stopEvent);
         }
     }
     
     void releaseResources() {
+        // Note: deviceEnumerator is NOT released here - we keep it for reuse
+        // It's only released in the destructor
         if (captureClient) {
             captureClient->Release();
             captureClient = nullptr;
@@ -64,6 +66,10 @@ struct AudioCapture {
             captureDevice->Release();
             captureDevice = nullptr;
         }
+    }
+    
+    void releaseAll() {
+        releaseResources();
         if (deviceEnumerator) {
             deviceEnumerator->Release();
             deviceEnumerator = nullptr;
@@ -125,8 +131,8 @@ jstring WStringToJString(JNIEnv* env, const std::wstring& wstr) {
 void CaptureThread(AudioCapture* capture) {
     HRESULT hr;
     UINT32 packetLength = 0;
-    BYTE* pData;
-    DWORD flags;
+    BYTE* pData = nullptr;
+    DWORD flags = 0;
     UINT64 devicePosition;
     UINT64 qpcPosition;
     
@@ -134,6 +140,9 @@ void CaptureThread(AudioCapture* capture) {
     HANDLE waitArray[1] = { capture->stopEvent };
     
     while (capture->isRecording) {
+        // Safety check
+        if (!capture->captureClient) break;
+        
         // Wait with timeout (100ms)
         DWORD waitResult = WaitForMultipleObjects(1, waitArray, FALSE, 100);
         
@@ -156,20 +165,22 @@ void CaptureThread(AudioCapture* capture) {
                 &devicePosition,
                 &qpcPosition
             );
-            if (FAILED(hr)) break;
+            if (FAILED(hr) || !pData) break;
             
-            // Calculate size in bytes
-            UINT32 bytesToCopy = packetLength * capture->waveFormat.nBlockAlign;
+            // Calculate size in bytes (safety check)
+            UINT32 blockAlign = capture->waveFormat.nBlockAlign;
+            if (blockAlign == 0) blockAlign = 4; // default to 16-bit stereo
+            UINT32 bytesToCopy = packetLength * blockAlign;
             
             // Calculate level
-            if (!(flags & AUDCLNT_BUFFERFLAGS_SILENT)) {
+            if (!(flags & AUDCLNT_BUFFERFLAGS_SILENT) && bytesToCopy > 0) {
                 capture->calculateLevel(pData, packetLength);
                 
                 // Copy data
                 size_t currentSize = capture->recordedData.size();
                 capture->recordedData.resize(currentSize + bytesToCopy);
                 memcpy(capture->recordedData.data() + currentSize, pData, bytesToCopy);
-            } else {
+            } else if (bytesToCopy > 0) {
                 // Silent frame - add silence to buffer
                 size_t currentSize = capture->recordedData.size();
                 capture->recordedData.resize(currentSize + bytesToCopy);
@@ -274,7 +285,10 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
     jint channels, 
     jint bitsPerSample
 ) {
-    if (!handle) return JNI_FALSE;
+    
+    if (!handle) {
+        return JNI_FALSE;
+    }
     
     AudioCapture* capture = reinterpret_cast<AudioCapture*>(handle);
     
@@ -290,16 +304,17 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
     capture->bitsPerSample = static_cast<UINT16>(bitsPerSample);
     
     // Determine if this is loopback (system audio) capture
-    std::wstring device = UTF8ToWString(env, deviceId);
-    capture->isLoopback = (device.find(L"Loopback") != std::wstring::npos || 
-                           device.find(L"System") != std::wstring::npos);
+    std::wstring deviceParam = UTF8ToWString(env, deviceId);
+    capture->isLoopback = (deviceParam.find(L"Loopback") != std::wstring::npos || 
+                           deviceParam.find(L"System") != std::wstring::npos);
     
     // Get device - for loopback we need the render endpoint
     EDataFlow dataFlow = capture->isLoopback ? eRender : eCapture;
-    DWORD stateMask = capture->isLoopback ? DEVICE_STATE_ACTIVE : DEVICE_STATE_ACTIVE;
+    DWORD stateMask = DEVICE_STATE_ACTIVE;
     
     HRESULT hr;
-    if (device.empty() || device == L"Default" || device == L"Microphone") {
+    bool useDefault = deviceParam.empty() || (deviceParam == L"Default") || (deviceParam == L"Microphone");
+    if (useDefault) {
         // Use default device
         hr = capture->deviceEnumerator->GetDefaultAudioEndpoint(
             dataFlow, 
@@ -308,7 +323,11 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
         );
     } else {
         // Try to find device by name
+                capture->deviceEnumerator, dataFlow, stateMask);
         IMMDeviceCollection* devices = nullptr;
+        if (!capture->deviceEnumerator) {
+            return JNI_FALSE;
+        }
         hr = capture->deviceEnumerator->EnumAudioEndpoints(dataFlow, stateMask, &devices);
         if (SUCCEEDED(hr)) {
             UINT count;
@@ -322,11 +341,14 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
                         PROPVARIANT varName;
                         PropVariantInit(&varName);
                         if (SUCCEEDED(props->GetValue(PKEY_Device_FriendlyName, &varName))) {
-                            if (wcscmp(device.c_str(), varName.pwszVal) == 0) {
-                                capture->captureDevice = pDevice;
-                                PropVariantClear(&varName);
-                                props->Release();
-                                break;
+                            // Check if it's a string type
+                            if (varName.vt == VT_LPWSTR && varName.pwszVal) {
+                                if (wcscmp(deviceParam.c_str(), varName.pwszVal) == 0) {
+                                    capture->captureDevice = pDevice;
+                                    PropVariantClear(&varName);
+                                    props->Release();
+                                    break;
+                                }
                             }
                             PropVariantClear(&varName);
                         }
@@ -348,53 +370,65 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
         }
     }
     
-    if (FAILED(hr) || !capture->captureDevice) return JNI_FALSE;
+    if (FAILED(hr) || !capture->captureDevice) {
+        return JNI_FALSE;
+    }
     
     // Activate audio client
     hr = capture->captureDevice->Activate(
         __uuidof(IAudioClient), CLSCTX_ALL, nullptr, (void**)&capture->audioClient
     );
-    if (FAILED(hr)) return JNI_FALSE;
+    if (FAILED(hr)) {
+        return JNI_FALSE;
+    }
     
-    // Get mix format
+    // Get mix format - this is what the device supports
     WAVEFORMATEX* mixFormat = nullptr;
     hr = capture->audioClient->GetMixFormat(&mixFormat);
     if (FAILED(hr)) return JNI_FALSE;
     
-    // Setup our desired format
-    capture->waveFormat.wFormatTag = WAVE_FORMAT_PCM;
-    capture->waveFormat.nChannels = capture->channels;
-    capture->waveFormat.nSamplesPerSec = capture->sampleRate;
-    capture->waveFormat.wBitsPerSample = capture->bitsPerSample;
-    capture->waveFormat.nBlockAlign = capture->channels * (capture->bitsPerSample / 8);
-    capture->waveFormat.nAvgBytesPerSec = capture->sampleRate * capture->waveFormat.nBlockAlign;
-    capture->waveFormat.cbSize = 0;
+    // Store the actual format we're using
+    capture->waveFormat = *mixFormat;
+    capture->sampleRate = mixFormat->nSamplesPerSec;
+    capture->channels = mixFormat->nChannels;
+    capture->bitsPerSample = mixFormat->wBitsPerSample;
     
-    CoTaskMemFree(mixFormat);
-    
-    // Initialize audio client
+    // Initialize audio client with mix format (guaranteed to work)
     REFERENCE_TIME bufferDuration = 10000000; // 1 second
     DWORD streamFlags = capture->isLoopback ? AUDCLNT_STREAMFLAGS_LOOPBACK : 0;
+    
+            capture->sampleRate, capture->channels, capture->bitsPerSample, capture->isLoopback);
     
     hr = capture->audioClient->Initialize(
         AUDCLNT_SHAREMODE_SHARED,
         streamFlags,
         bufferDuration,
         0,
-        &capture->waveFormat,
+        mixFormat,  // Use the mix format directly!
         nullptr
     );
-    if (FAILED(hr)) return JNI_FALSE;
+    
+    CoTaskMemFree(mixFormat);
+    if (FAILED(hr)) {
+        return JNI_FALSE;
+    }
+    
     
     // Get capture client
     hr = capture->audioClient->GetService(
         __uuidof(IAudioCaptureClient), (void**)&capture->captureClient
     );
-    if (FAILED(hr)) return JNI_FALSE;
+    if (FAILED(hr)) {
+        return JNI_FALSE;
+    }
+    
     
     // Start recording
     hr = capture->audioClient->Start();
-    if (FAILED(hr)) return JNI_FALSE;
+    if (FAILED(hr)) {
+        return JNI_FALSE;
+    }
+    
     
     capture->isRecording = true;
     ResetEvent(capture->stopEvent);

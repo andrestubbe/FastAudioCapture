@@ -430,9 +430,7 @@ JNIEXPORT jboolean JNICALL Java_fastaudio_FastAudioCapture_startRecording(
     REFERENCE_TIME bufferDuration = 10000000; // 1 second
     DWORD streamFlags = capture->isLoopback ? AUDCLNT_STREAMFLAGS_LOOPBACK : 0;
     
-    fprintf(stderr, "[DEBUG] Format: Tag=%d, Bits=%d, Align=%d\n",
             capture->waveFormat.wFormatTag, capture->waveFormat.wBitsPerSample, capture->waveFormat.nBlockAlign);
-    fprintf(stderr, "[DEBUG] Initializing audio client: %dHz, %dch, %dbits (mix format), loopback=%d\n",
             capture->sampleRate, capture->channels, capture->bitsPerSample, capture->isLoopback);
     
     hr = capture->audioClient->Initialize(

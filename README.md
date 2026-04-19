@@ -1,6 +1,6 @@
-# FastAudioCapture — Native Audio Capture for Java [ALPHA]
+# FastAudioCapture — Native Audio Capture for Java
 
-> **Real-time audio recording** — WASAPI native audio capture for Java, microphone & system audio.
+> **Real-time audio recording** — Real WASAPI native audio capture for Java, microphone & system audio.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)

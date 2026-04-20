@@ -1,0 +1,11 @@
+LIBRARY fastaudiocapture
+EXPORTS
+    Java_fastaudio_FastAudioCapture_createCapture
+    Java_fastaudio_FastAudioCapture_destroyCapture
+    Java_fastaudio_FastAudioCapture_startRecording
+    Java_fastaudio_FastAudioCapture_stopRecording
+    Java_fastaudio_FastAudioCapture_isRecording
+    Java_fastaudio_FastAudioCapture_saveToFile
+    Java_fastaudio_FastAudioCapture_getLevel
+    Java_fastaudio_FastAudioCapture_nativeGetCaptureDevices
+    Java_fastaudio_FastAudioCapture_nativeGetDefaultDevice

@@ -99,12 +99,14 @@ cl.exe ^
     /I"%WindowsSdkDir%Include\%WindowsSDKVersion%\shared" ^
     /I"%WindowsSdkDir%Include\%WindowsSDKVersion%\ucrt" ^
     /I"%VSPATH%\VC\Tools\MSVC\%VCToolsVersion%\include" ^
-    ..\src\main\c++\fastaudiocapture.cpp ^
+    ..\native\src\fastaudiocapture.cpp ^
     /link ^
     /DLL ^
     /OUT:fastaudiocapture.dll ^
+    /DEF:..\native\fastaudiocapture.def ^
     kernel32.lib ^
-    user32.lib
+    user32.lib ^
+    ole32.lib
 
 if errorlevel 1 (
     echo.

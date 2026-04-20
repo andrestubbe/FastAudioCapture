@@ -714,7 +714,7 @@ JNIEXPORT jstring JNICALL Java_fastaudio_FastAudioCapture_nativeGetDefaultDevice
 }
 
 // Set audio callback for real-time streaming
-JNIEXPORT void JNICALL Java_fastaudio_FastAudioCapture_setAudioCallbackNative(JNIEnv* env, jobject thiz, jlong handle, jobject callback) {
+JNIEXPORT void JNICALL Java_fastaudio_FastAudioCapture_setAudioCallbackNative(JNIEnv* env, jclass clazz, jlong handle, jobject callback) {
     AudioCapture* capture = reinterpret_cast<AudioCapture*>(handle);
     if (!capture) {
         fprintf(stderr, "[setAudioCallback] Invalid handle\n");

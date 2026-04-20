@@ -9,3 +9,4 @@ EXPORTS
     Java_fastaudio_FastAudioCapture_getLevel
     Java_fastaudio_FastAudioCapture_nativeGetCaptureDevices
     Java_fastaudio_FastAudioCapture_nativeGetDefaultDevice
+    Java_fastaudio_FastAudioCapture_setAudioCallbackNative

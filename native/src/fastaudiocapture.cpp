@@ -43,6 +43,12 @@ struct AudioCapture {
     UINT16 bitsPerSample = 16;
     bool isLoopback = false; // false = microphone, true = system audio
     
+    // JNI callback data
+    JavaVM* jvm = nullptr;
+    jobject callbackObject = nullptr;
+    jmethodID callbackMethod = nullptr;
+    std::mutex callbackMutex;
+    
     ~AudioCapture() {
         stopRecording();
         releaseAll();
@@ -125,6 +131,41 @@ jstring WStringToJString(JNIEnv* env, const std::wstring& wstr) {
     return env->NewStringUTF(result.c_str());
 }
 
+// Helper function to call Java callback
+void InvokeJavaCallback(AudioCapture* capture, const short* pcmData, UINT32 numSamples, UINT64 timestamp) {
+    if (!capture->jvm || !capture->callbackObject || !capture->callbackMethod) {
+        return;
+    }
+    
+    // Attach thread to JVM
+    JNIEnv* env;
+    jint attachResult = capture->jvm->AttachCurrentThread((void**)&env, nullptr);
+    if (attachResult != JNI_OK) {
+        fprintf(stderr, "[Callback] Failed to attach thread: %d\n", attachResult);
+        return;
+    }
+    
+    // Create jshortArray
+    jshortArray jArray = env->NewShortArray(numSamples);
+    if (jArray) {
+        env->SetShortArrayRegion(jArray, 0, numSamples, pcmData);
+        
+        // Call Java callback: onAudioData(short[] samples, long timestamp)
+        env->CallVoidMethod(capture->callbackObject, capture->callbackMethod, jArray, (jlong)timestamp);
+        
+        // Check for exception
+        if (env->ExceptionCheck()) {
+            env->ExceptionDescribe();
+            env->ExceptionClear();
+        }
+        
+        env->DeleteLocalRef(jArray);
+    }
+    
+    // Detach thread
+    capture->jvm->DetachCurrentThread();
+}
+
 // Capture thread function
 void CaptureThread(AudioCapture* capture) {
     HRESULT hr;
@@ -136,6 +177,9 @@ void CaptureThread(AudioCapture* capture) {
     
     // Event-driven capture loop
     HANDLE waitArray[1] = { capture->stopEvent };
+    
+    // Buffer for PCM conversion
+    std::vector<short> pcmBuffer;
     
     while (capture->isRecording) {
         // Safety check
@@ -174,26 +218,36 @@ void CaptureThread(AudioCapture* capture) {
             if (!(flags & AUDCLNT_BUFFERFLAGS_SILENT) && bytesToCopy > 0) {
                 capture->calculateLevel(pData, packetLength);
                 
+                UINT32 numSamples = packetLength * capture->waveFormat.nChannels;
+                pcmBuffer.resize(numSamples);
+                
                 // Check if we need to convert 32-bit float to 16-bit PCM
                 if (capture->waveFormat.wBitsPerSample == 32) {
                     // Convert float to 16-bit PCM
                     const float* floatData = reinterpret_cast<const float*>(pData);
-                    UINT32 numSamples = packetLength * capture->waveFormat.nChannels;
-                    size_t currentSize = capture->recordedData.size();
-                    capture->recordedData.resize(currentSize + (numSamples * 2));
-                    short* pcmData = reinterpret_cast<short*>(capture->recordedData.data() + currentSize);
                     
                     for (UINT32 i = 0; i < numSamples; i++) {
                         float sample = floatData[i];
                         if (sample > 1.0f) sample = 1.0f;
                         if (sample < -1.0f) sample = -1.0f;
-                        pcmData[i] = static_cast<short>(sample * 32767.0f);
+                        pcmBuffer[i] = static_cast<short>(sample * 32767.0f);
                     }
                 } else {
                     // Copy as-is (already 16-bit PCM)
-                    size_t currentSize = capture->recordedData.size();
-                    capture->recordedData.resize(currentSize + bytesToCopy);
-                    memcpy(capture->recordedData.data() + currentSize, pData, bytesToCopy);
+                    memcpy(pcmBuffer.data(), pData, bytesToCopy);
+                }
+                
+                // Copy to recording buffer
+                size_t currentSize = capture->recordedData.size();
+                capture->recordedData.resize(currentSize + (numSamples * 2));
+                memcpy(capture->recordedData.data() + currentSize, pcmBuffer.data(), numSamples * 2);
+                
+                // Invoke Java callback (thread-safe with mutex)
+                {
+                    std::lock_guard<std::mutex> lock(capture->callbackMutex);
+                    if (capture->callbackObject) {
+                        InvokeJavaCallback(capture, pcmBuffer.data(), numSamples, devicePosition);
+                    }
                 }
             } else if (bytesToCopy > 0) {
                 // Silent frame - add silence to buffer (16-bit PCM size)
@@ -202,6 +256,15 @@ void CaptureThread(AudioCapture* capture) {
                 capture->recordedData.resize(currentSize + (numSamples * 2));
                 memset(capture->recordedData.data() + currentSize, 0, numSamples * 2);
                 capture->currentLevel = 0.0f;
+                
+                // Invoke callback with silence
+                {
+                    std::lock_guard<std::mutex> lock(capture->callbackMutex);
+                    if (capture->callbackObject) {
+                        pcmBuffer.assign(numSamples, 0);
+                        InvokeJavaCallback(capture, pcmBuffer.data(), numSamples, devicePosition);
+                    }
+                }
             }
             
             // Release buffer
@@ -647,6 +710,56 @@ JNIEXPORT jstring JNICALL Java_fastaudio_FastAudioCapture_nativeGetDefaultDevice
     
     CoUninitialize();
     return WStringToJString(env, defaultName);
+}
+
+// Set audio callback for real-time streaming
+JNIEXPORT void JNICALL Java_fastaudio_FastAudioCapture_setAudioCallbackNative(JNIEnv* env, jobject thiz, jlong handle, jobject callback) {
+    AudioCapture* capture = reinterpret_cast<AudioCapture*>(handle);
+    if (!capture) {
+        fprintf(stderr, "[setAudioCallback] Invalid handle\n");
+        return;
+    }
+    
+    std::lock_guard<std::mutex> lock(capture->callbackMutex);
+    
+    // Clear old callback
+    if (capture->callbackObject) {
+        env->DeleteGlobalRef(capture->callbackObject);
+        capture->callbackObject = nullptr;
+        capture->callbackMethod = nullptr;
+    }
+    
+    // Set new callback
+    if (callback) {
+        // Store JavaVM for thread attachment
+        if (!capture->jvm) {
+            JavaVM* vm = nullptr;
+            jint result = env->GetJavaVM(&vm);
+            if (result == JNI_OK) {
+                capture->jvm = vm;
+            } else {
+                fprintf(stderr, "[setAudioCallback] Failed to get JavaVM: %d\n", result);
+                return;
+            }
+        }
+        
+        // Create global reference
+        capture->callbackObject = env->NewGlobalRef(callback);
+        
+        // Find callback method
+        jclass callbackClass = env->GetObjectClass(callback);
+        capture->callbackMethod = env->GetMethodID(callbackClass, "onAudioData", "([SJ)V");
+        
+        if (!capture->callbackMethod) {
+            fprintf(stderr, "[setAudioCallback] Failed to find onAudioData method\n");
+            env->DeleteGlobalRef(capture->callbackObject);
+            capture->callbackObject = nullptr;
+        } else {
+            fprintf(stderr, "[setAudioCallback] Callback registered successfully\n");
+        }
+    } else {
+        fprintf(stderr, "[setAudioCallback] Callback cleared\n");
+    }
 }
 
 } // extern "C"

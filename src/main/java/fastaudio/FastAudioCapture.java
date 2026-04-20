@@ -66,6 +66,10 @@ public class FastAudioCapture {
     private static native float getLevel(long handle);
     private static native String[] nativeGetCaptureDevices();
     private static native String nativeGetDefaultDevice();
+    private static native void setAudioCallbackNative(long handle, AudioCallback callback);
+    
+    // Instance callback
+    private AudioCallback audioCallback;
     
     /**
      * Audio capture callback interface.
@@ -172,6 +176,17 @@ public class FastAudioCapture {
     public float getLevel() {
         checkHandle();
         return getLevel(nativeHandle);
+    }
+    
+    /**
+     * Set audio callback for real-time streaming.
+     * Called continuously with audio data during recording.
+     * @param callback AudioCallback implementation (null to disable)
+     */
+    public void setAudioCallback(AudioCallback callback) {
+        checkHandle();
+        this.audioCallback = callback;
+        setAudioCallbackNative(nativeHandle, callback);
     }
     
     /**

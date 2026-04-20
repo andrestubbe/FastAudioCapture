@@ -18,6 +18,7 @@
 #include <atomic>
 #include <cstring>
 #include <chrono>
+#include <mutex>
 
 #pragma comment(lib, "ole32.lib")
 

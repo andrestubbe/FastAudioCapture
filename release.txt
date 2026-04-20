@@ -1,0 +1,108 @@
+================================================================================
+FastAudioCapture v1.0.0 - Release Package
+================================================================================
+
+QUICK START (Copy & Paste)
+--------------------------------------------------------------------------------
+
+1. BUILD FAT JAR (includes native DLL):
+   mvn clean package -DskipTests
+
+2. RUN CONSOLE RECORD DEMO:
+   java --enable-native-access=ALL-UNNAMED -cp "target/fastaudiocapture-1.0.0.jar;examples" ConsoleRecordDemo
+
+3. RUN BASIC TEST:
+   java --enable-native-access=ALL-UNNAMED -cp "target/fastaudiocapture-1.0.0.jar;." Test
+
+4. BUILD NATIVE DLL (Windows):
+   compile.bat
+
+================================================================================
+
+PACKAGE CONTENTS
+--------------------------------------------------------------------------------
+
+📦 fastaudiocapture-1.0.0.jar     - FAT JAR with embedded DLL
+📁 examples/
+   ├── ConsoleRecordDemo.java     - Console recording with level meter
+   └── TestRecordPlay.java        - Record and playback test
+📁 native/
+   ├── fastaudiocapture.def       - JNI exports
+   └── src/
+       ├── fastaudiocapture.cpp   - WASAPI implementation
+📄 compile.bat                    - Windows build script
+📄 README.md                      - Full documentation
+
+================================================================================
+
+REQUIREMENTS
+--------------------------------------------------------------------------------
+- Windows 10/11 (x64)
+- JDK 17+ (JDK 21 or 25 recommended)
+- For building: Visual Studio 2019+ (Community/Enterprise/BuildTools)
+
+================================================================================
+
+API EXAMPLE
+--------------------------------------------------------------------------------
+
+import fastaudio.FastAudioCapture;
+
+public class Demo {
+    public static void main(String[] args) throws Exception {
+        FastAudioCapture capture = new FastAudioCapture();
+        
+        // Start recording from microphone
+        // (48000Hz, stereo, 16-bit)
+        capture.startRecording(48000, 2, 16);
+        
+        // Record for 5 seconds with level monitoring
+        for (int i = 0; i < 50; i++) {
+            float level = capture.getLevel(); // 0.0 to 1.0
+            System.out.println("Level: " + (int)(level * 100) + "%");
+            Thread.sleep(100);
+        }
+        
+        // Stop and save
+        capture.stopRecording();
+        capture.saveToFile("recording.wav");
+        capture.close();
+    }
+}
+
+Compile & Run:
+javac -cp fastaudiocapture-1.0.0.jar Demo.java
+java --enable-native-access=ALL-UNNAMED -cp "fastaudiocapture-1.0.0.jar;." Demo
+
+================================================================================
+
+SYSTEM AUDIO LOOPBACK
+--------------------------------------------------------------------------------
+
+// Record everything playing on your speakers (Spotify, YouTube, etc.)
+capture.startSystemRecording(48000, 2, 16);
+
+Thread.sleep(10000); // Record 10 seconds
+capture.stopRecording();
+capture.saveToFile("system-audio.wav");
+
+================================================================================
+
+FEATURES
+--------------------------------------------------------------------------------
+✓ Microphone recording (WASAPI)
+✓ System audio capture (loopback)
+✓ Real-time level meter / VU meter
+✓ Save to WAV format
+✓ Multiple sample rates (44100, 48000, etc.)
+✓ 16/24/32-bit depth support
+✓ Mono/Stereo channels
+
+================================================================================
+
+LINKS
+--------------------------------------------------------------------------------
+GitHub: https://github.com/andrestubbe/fastaudiocapture
+Issues: https://github.com/andrestubbe/fastaudiocapture/issues
+
+================================================================================

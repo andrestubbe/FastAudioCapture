@@ -8,10 +8,13 @@ QUICK START (Copy & Paste)
 1. BUILD FAT JAR (includes native DLL):
    mvn clean package -DskipTests
 
-2. RUN CONSOLE RECORD DEMO:
+2. RUN STREAM CALLBACK DEMO (real-time):
+   java --enable-native-access=ALL-UNNAMED -cp "target/fastaudiocapture-1.0.0.jar;examples" StreamCallbackDemo
+
+3. RUN CONSOLE RECORD DEMO:
    java --enable-native-access=ALL-UNNAMED -cp "target/fastaudiocapture-1.0.0.jar;examples" ConsoleRecordDemo
 
-3. RUN BASIC TEST:
+4. RUN BASIC TEST:
    java --enable-native-access=ALL-UNNAMED -cp "target/fastaudiocapture-1.0.0.jar;." Test
 
 4. BUILD NATIVE DLL (Windows):
@@ -24,6 +27,7 @@ PACKAGE CONTENTS
 
 📦 fastaudiocapture-1.0.0.jar     - FAT JAR with embedded DLL
 📁 examples/
+   ├── StreamCallbackDemo.java    - Real-time audio streaming with callback
    ├── ConsoleRecordDemo.java     - Console recording with level meter
    └── TestRecordPlay.java        - Record and playback test
 📁 native/
@@ -92,11 +96,13 @@ FEATURES
 --------------------------------------------------------------------------------
 ✓ Microphone recording (WASAPI)
 ✓ System audio capture (loopback)
+✓ Real-time audio callback (~100x/sec)
 ✓ Real-time level meter / VU meter
 ✓ Save to WAV format
 ✓ Multiple sample rates (44100, 48000, etc.)
 ✓ 16/24/32-bit depth support
 ✓ Mono/Stereo channels
+✓ FAT JAR (no external DLL needed)
 
 ================================================================================
 

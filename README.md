@@ -78,23 +78,9 @@ capture.close();
 
 ---
 
-## 🛠️ Building
+## Build from Source
 
-### Prerequisites
-- Windows 10/11
-- Java 17+
-- Visual Studio 2022 (with C++ workload)
-- Windows SDK
-
-### Build DLL
-```batch
-compile.bat
-```
-
-### Build JAR
-```batch
-mvn clean package
-```
+See [COMPILE.md](COMPILE.md) for detailed build instructions.
 
 ---
 

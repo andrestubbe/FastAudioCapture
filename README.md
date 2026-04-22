@@ -1,4 +1,4 @@
-# FastAudioCapture — Native Audio Capture for Java
+# FastAudioCapture — Native Audio Capture for Java [ALPHA]
 
 > **Real-time audio recording** — Real WASAPI native audio capture for Java, microphone & system audio.
 

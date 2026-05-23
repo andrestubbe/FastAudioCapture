@@ -1,4 +1,4 @@
-# FastAudioCapture — High-Performance Native Audio Capture for Java [v0.1.0]
+﻿# FastAudioCapture â€” High-Performance Native Audio Capture for Java [v0.1.0]
 
 **A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
 
@@ -19,10 +19,10 @@
 - [License](#license)
 
 ## Features
-- **🎙️ Low Latency**: Native WASAPI integration for minimal delay.
-- **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
-- **📦 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
-- **🖇️ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+- **ðŸŽ™ï¸ Low Latency**: Native WASAPI integration for minimal delay.
+- **âš¡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
+- **ðŸ“¦ Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
+- **ðŸ–‡ï¸ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
 ## Quick Start
 
@@ -40,7 +40,7 @@ mvn clean install
 ### Option 1: Maven (Recommended)
 Add the JitPack repository and the dependencies to your `pom.xml`:
 
-`xml
+```xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -55,6 +55,7 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <artifactId>fastaudiocapture</artifactId>
         <version>v0.1.0</version>
     </dependency>
+
     <!-- FastCore (Required Native Loader) -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
@@ -62,19 +63,19 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <version>v0.1.0</version>
     </dependency>
 </dependencies>
-`
+```
 
 ### Option 2: Gradle (via JitPack)
-`groovy
+```groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:.1.0'
+    implementation 'com.github.andrestubbe:fastaudiocapture:v0.1.0'
     implementation 'com.github.andrestubbe:fastcore:v0.1.0'
 }
-`
+```
 
 ### Option 3: Direct Download (No Build Tool)
 Download the latest JARs directly to add them to your classpath:
@@ -93,10 +94,10 @@ Download the latest JARs directly to add them to your classpath:
 See [COMPILE.md](COMPILE.md) for detailed build instructions.
 
 ## License
-MIT License — See [LICENSE](LICENSE) for details.
+MIT License â€” See [LICENSE](LICENSE) for details.
 
 ---
-**Part of the FastJava Ecosystem** — *Making the JVM faster.*
+**Part of the FastJava Ecosystem** â€” *Making the JVM faster.*
 
 <!-- BING COPILOT SEO KEYWORDS -->
 <!-- 

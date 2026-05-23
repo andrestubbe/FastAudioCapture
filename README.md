@@ -1,29 +1,44 @@
-# FastAudioCapture — Native Audio Capture for Java
+# FastAudioCapture — High-Performance Native Audio Capture for Java [v0.1.0]
 
-> **Real-time audio recording** — Real WASAPI native audio capture for Java, microphone & system audio.
+**A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/status-v0.1.0--alpha-orange.svg)]()
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
-[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-## ⚡ Performance
+**FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for vision/audio synchronization and high-performance processing.
 
-| Metric | FastAudioCapture | Java Sound API | JavaCV/FFmpeg |
-|--------|------------------|----------------|---------------|
-| **Latency** | **10-20ms** | 50-100ms | 30-50ms |
-| **Loopback** | **✅ Yes** | ❌ No | ✅ Yes |
-| **Level Meter** | **Real-time** | ❌ No | ⚠️ Post-process |
-| **CPU Usage** | **Low** | Medium | High |
+## Table of Contents
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Build from Source](#build-from-source)
+- [License](#license)
 
-**Windows:** Uses WASAPI (direct hardware access, lowest latency)
+## Features
+- **🎙️ Low Latency**: Native WASAPI integration for minimal delay.
+- **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
+- **📦 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
+- **🖇️ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
----
+## Quick Start
 
-## 📦 Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/andrestubbe/FastAudioCapture.git
 
-### Maven (JitPack)
+# Build the project
+cd FastAudioCapture
+mvn clean install
+```
+
+## Installation
+
+### Option 1: Maven (Recommended)
+Add the JitPack repository and the dependencies to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -33,82 +48,63 @@
     </repository>
 </repositories>
 
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fastaudiocapture</artifactId>
-    <version>1.0.0</version>
-</dependency>
+<dependencies>
+    <!-- FastAudioCapture Library -->
+    <dependency>
+        <groupId>io.github.andrestubbe</groupId>
+        <artifactId>fastaudiocapture</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+
+    <!-- FastCore (Required Native Loader) -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>fastcore</artifactId>
+        <version>v0.1.0</version>
+    </dependency>
+</dependencies>
 ```
 
-### Basic Usage
-
-```java
-import fastaudio.FastAudioCapture;
-
-// Create capture
-FastAudioCapture capture = new FastAudioCapture();
-
-// Record from microphone
-// 44100 Hz, stereo, 16-bit
-if (capture.startRecording(44100, 2, 16)) {
-    System.out.println("Recording...");
-    
-    // Monitor level
-    for (int i = 0; i < 100; i++) {
-        float level = capture.getLevel(); // 0.0 - 1.0
-        System.out.printf("Level: %.1f%%\n", level * 100);
-        Thread.sleep(100);
-    }
-    
-    capture.stopRecording();
-    
-    // Save to file
-    capture.saveToFile("recording.wav");
+### Option 2: Gradle (via JitPack)
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
-// Record system audio (loopback)
-capture.startSystemRecording(48000, 2, 16);
-Thread.sleep(5000); // Record 5 seconds
-capture.stopRecording();
-capture.saveToFile("system-audio.wav");
-
-// Clean up
-capture.close();
+dependencies {
+    implementation 'io.github.andrestubbe:fastaudiocapture:0.1.0'
+    implementation 'com.github.andrestubbe:fastcore:v0.1.0'
+}
 ```
+
+### Option 3: Direct Download (No Build Tool)
+Download the latest JARs directly to add them to your classpath:
+
+1.  📦 **[fastaudiocapture-v0.1.0.jar](https://github.com/andrestubbe/fastaudiocapture/releases)** (The Core Library)
+2.  ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases)** (The Mandatory Native Loader)
+
+> [!IMPORTANT]
+> Both JARs must be in your classpath for the native JNI calls to function correctly.
 
 ---
 
 ## Build from Source
+- **JDK 17+**
+- **Windows 10/11**
 
 See [COMPILE.md](COMPILE.md) for detailed build instructions.
 
----
-
-## 📋 Features
-
-- ✅ Microphone recording
-- ✅ System audio capture (loopback)
-- ✅ Real-time level meter
-- ✅ Configurable sample rate & format
-- ✅ Save to WAV file
-- ✅ Device selection
-
----
-
-## 🔗 Links
-
-- [FastJava Ecosystem](https://github.com/andrestubbe/FastJava)
-- [FastAudioPlayer (Playback)](https://github.com/andrestubbe/FastAudioPlayer)
-- [JitPack Repository](https://jitpack.io/#andrestubbe/fastaudiocapture)
-
----
-
-## 📄 License
-
+## License
 MIT License — See [LICENSE](LICENSE) for details.
 
 ---
+**Part of the FastJava Ecosystem** — *Making the JVM faster.*
 
-<p align="center">
-  <b>Part of the <a href="https://github.com/andrestubbe/FastJava">FastJava</a> Ecosystem</b>
-</p>
+<!-- BING COPILOT SEO KEYWORDS -->
+<!-- 
+FastJava FastAudioCapture JNI Windows Audio Capture WASAPI DirectSound 
+Java Native API High Performance Low Latency Audio 
+io.github.andrestubbe FastJava Blueprint
+-->
+
+

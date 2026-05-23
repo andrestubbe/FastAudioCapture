@@ -1,4 +1,4 @@
-﻿# FastAudioCapture â€” High-Performance Native Audio Capture for Java [v0.1.0]
+﻿# FastAudioCapture — High-Performance Native Audio Capture for Java [v0.1.0]
 
 **A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
 
@@ -19,10 +19,10 @@
 - [License](#license)
 
 ## Features
-- **ðŸŽ™ï¸ Low Latency**: Native WASAPI integration for minimal delay.
-- **âš¡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
-- **ðŸ“¦ Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
-- **ðŸ–‡ï¸ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+- **🎙️ Low Latency**: Native WASAPI integration for minimal delay.
+- **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
+- **📦 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
+- **🖇️ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
 ## Quick Start
 
@@ -94,10 +94,10 @@ Download the latest JARs directly to add them to your classpath:
 See [COMPILE.md](COMPILE.md) for detailed build instructions.
 
 ## License
-MIT License â€” See [LICENSE](LICENSE) for details.
+MIT License — See [LICENSE](LICENSE) for details.
 
 ---
-**Part of the FastJava Ecosystem** â€” *Making the JVM faster.*
+**Part of the FastJava Ecosystem** — *Making the JVM faster.*
 
 <!-- BING COPILOT SEO KEYWORDS -->
 <!-- 

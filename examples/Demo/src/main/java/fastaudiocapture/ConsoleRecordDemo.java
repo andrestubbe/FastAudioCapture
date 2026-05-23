@@ -1,3 +1,4 @@
+package fastaudiocapture;
 import fastaudio.FastAudioCapture;
 
 /**
@@ -102,3 +103,4 @@ public class ConsoleRecordDemo {
         System.out.println("╚════════════════════════════════════════════════════════════╝");
     }
 }
+

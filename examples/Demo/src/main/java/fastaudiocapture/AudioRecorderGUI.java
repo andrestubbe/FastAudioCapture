@@ -1,3 +1,4 @@
+package fastaudiocapture;
 import fastaudio.FastAudioCapture;
 
 import javax.swing.*;
@@ -212,3 +213,4 @@ public class AudioRecorderGUI extends JFrame {
         });
     }
 }
+

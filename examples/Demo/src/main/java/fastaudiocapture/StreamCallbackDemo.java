@@ -1,3 +1,4 @@
+package fastaudiocapture;
 import fastaudio.FastAudioCapture;
 import fastaudio.FastAudioCapture.AudioCallback;
 
@@ -86,3 +87,4 @@ public class StreamCallbackDemo implements AudioCallback {
         capture.close();
     }
 }
+

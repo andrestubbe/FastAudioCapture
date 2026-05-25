@@ -6,14 +6,12 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
 
-**⚡ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.
-**
+**⚡ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
 
 **FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
 vision/audio synchronization and high-performance processing.
 
 [![FastFileIndex Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
-
 
 ---
 
@@ -25,12 +23,16 @@ vision/audio synchronization and high-performance processing.
 - [Build from Source](#build-from-source)
 - [License](#license)
 
+---
+
 ## Features
 
 - **🎙️ Low Latency**: Native WASAPI integration for minimal delay.
 - **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
 - **📦 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
 - **🖇️ Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+
+---
 
 ## Quick Start
 
@@ -42,6 +44,7 @@ git clone https://github.com/andrestubbe/FastAudioCapture.git
 cd FastAudioCapture
 mvn clean install
 ```
+---
 
 ## Installation
 
@@ -50,28 +53,23 @@ mvn clean install
 Add the JitPack repository and the dependencies to your `pom.xml`:
 
 ```xml
-
 <repositories>
     <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
-
 <dependencies>
-<!-- FastAudioCapture Library -->
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fastaudiocapture</artifactId>
-    <version>v0.1.0</version>
-</dependency>
-
-<!-- FastCore (Required Native Loader) -->
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fastcore</artifactId>
-    <version>v0.1.0</version>
-</dependency>
+   <dependency>
+       <groupId>com.github.andrestubbe</groupId>
+       <artifactId>fastaudiocapture</artifactId>
+       <version>v0.1.0</version>
+   </dependency>
+   <dependency>
+       <groupId>com.github.andrestubbe</groupId>
+       <artifactId>fastcore</artifactId>
+       <version>v0.1.0</version>
+   </dependency>
 </dependencies>
 ```
 
@@ -81,7 +79,6 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
 repositories {
     maven { url 'https://jitpack.io' }
 }
-
 dependencies {
     implementation 'com.github.andrestubbe:fastaudiocapture:v0.1.0'
     implementation 'com.github.andrestubbe:fastcore:v0.1.0'
@@ -94,12 +91,9 @@ Download the latest JARs directly to add them to your classpath:
 
 1. 📦 *
    *[fastaudiocapture-v0.1.0.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/v0.1.0/fastaudiocapture-v0.1.0.jar)
-   ** (The Core Library)
+** (The Core Library)
 2. ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/v0.1.0/fastcore-v0.1.0.jar)** (
    The Mandatory Native Loader)
-
-> [!IMPORTANT]
-> All JARs must be in your classpath for the native JNI calls to function correctly.
 
 ---
 

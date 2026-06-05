@@ -1,7 +1,9 @@
 @echo off
+chcp 65001 >nul
+cd /d "%~dp0"
 
-echo 🚀 Running Hero Demo...
+echo [FastAudioCapture] Running Demo (via JitPack)...
 cd examples\Demo
-call mvn -q compile exec:java -Dexec.mainClass=fastaudiocapture.ConsoleRecordDemo
+call mvn compile exec:java -Dexec.mainClass=fastaudiocapture.ConsoleRecordDemo
 cd ..\..
 pause

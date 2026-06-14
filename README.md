@@ -1,12 +1,12 @@
-# FastAudioCapture 0.1.0 [ALPHA]  High-Performance Native Audio Capture for Java
+# FastAudioCapture 0.1.0 [ALPHA-2026-05-17] — High-Performance Native Audio Capture for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe/FastAudioCapture)
+[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
 
-**âš¡ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
+**🎙️ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
 
 **FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
 vision/audio synchronization and high-performance processing.
@@ -27,10 +27,10 @@ vision/audio synchronization and high-performance processing.
 
 ## Features
 
-- **ðŸš€? Low Latency**: Native WASAPI integration for minimal delay.
-- **âš¡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
-- **ðŸš€ Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
-- **ðŸš€? Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+- **🚀 Low Latency**: Native WASAPI integration for minimal delay.
+- **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
+- **🚀 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
+- **🚀 Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
 ---
 
@@ -89,10 +89,10 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. ðŸš€ *
+1. 🚀 *
    *[fastaudiocapture-0.1.0.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/0.1.0/fastaudiocapture-0.1.0.jar)
 ** (The Core Library)
-2. ðŸš€ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
+2. 🚀 **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
    The Mandatory Native Loader)
 
 ---
@@ -110,9 +110,9 @@ Download the latest JARs directly to add them to your classpath:
 
 | Platform      | Status            |
 |---------------|-------------------|
-| Windows 10/11 | ? Fully Supported |
-| Linux         | ðŸš€ Planned        |
-| macOS         | ðŸš€ Planned        |
+| Windows 10/11 | ✅ Fully Supported |
+| Linux         | 🚀 Planned        |
+| macOS         | 🚀 Planned        |
 
 ---
 
@@ -132,6 +132,4 @@ MIT License  See [LICENSE](LICENSE) file for details.
 
 ---
 
-**Part of the FastJava Ecosystem**  *Making the JVM faster. Small package. Maximum speed. Zero bloat. ðŸš€ðŸš€*
-
-
+**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*

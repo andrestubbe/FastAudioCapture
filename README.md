@@ -27,10 +27,10 @@ vision/audio synchronization and high-performance processing.
 
 ## Features
 
-- **🚀 Low Latency**: Native WASAPI integration for minimal delay.
-- **⚡ High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
-- **🚀 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
-- **🚀 Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+- **⏱️ Low Latency**: Native WASAPI integration for minimal delay.
+- **🔊 High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
+- **📥 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
+- **🔗 Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
 ---
 
@@ -89,10 +89,10 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. 🚀 *
+1. 📦 *
    *[fastaudiocapture-0.1.0.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/0.1.0/fastaudiocapture-0.1.0.jar)
 ** (The Core Library)
-2. 🚀 **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
+2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
    The Mandatory Native Loader)
 
 ---
@@ -111,8 +111,8 @@ Download the latest JARs directly to add them to your classpath:
 | Platform      | Status            |
 |---------------|-------------------|
 | Windows 10/11 | ✅ Fully Supported |
-| Linux         | 🚀 Planned        |
-| macOS         | 🚀 Planned        |
+| Linux         | 🔗 Planned        |
+| macOS         | 🔗 Planned        |
 
 ---
 

@@ -1,6 +1,6 @@
 # FastAudioCapture 0.1.1 [ALPHA-2026-05-17] â€” High-Performance Native Audio Capture for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.0)
+[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
@@ -11,7 +11,7 @@
 **FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
 vision/audio synchronization and high-performance processing.
 
-[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+[![FastFileIndex Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
 
 ---
 
@@ -83,8 +83,8 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-    implementation 'com.github.andrestubbe:fastaudiocapture:0.1.0'
-    implementation 'com.github.andrestubbe:fastcore:0.1.0'
+    implementation 'com.github.andrestubbe:fastaudiocapture:0.1.1'
+    implementation 'com.github.andrestubbe:fastcore:0.1.1'
 }
 ```
 
@@ -93,16 +93,14 @@ dependencies {
 Download the latest JARs directly to add them to your classpath:
 
 1. ðŸ“¦ *
-   *[fastaudiocapture-0.1.0.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/0.1.0/fastaudiocapture-0.1.0.jar)
+   *[fastaudiocapture-0.1.1.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/0.1.1/fastaudiocapture-0.1.1.jar)
 ** (The Core Library)
-2. âš™ï¸ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
+2. âš™ï¸ **[fastcore-0.1.1.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.1/fastcore-0.1.1.jar)** (
    The Mandatory Native Loader)
 
 ---
 
 ## Documentation
-
-- **[CHANGELOG.md](docs/CHANGELOG.md)**: Project history and release notes.
 
 * **[COMPILE.md](COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
 * **[REFERENCE.md](docs/REFERENCE.md)**: Full API descriptions, border configurations, and codepoint index.

@@ -1,138 +1,76 @@
-# FastAudioCapture 0.1.1 [ALPHA-2026-08] [ALPHA-2026-05-17] — High-Performance Native Audio Capture for Java
+# FastAudioCapture 0.1.1 [ALPHA-2026-08] — High-Performance Native Audio Engine for Java
 
-[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.0)
+[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
-
-**🎙️ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
-
-**FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
-vision/audio synchronization and high-performance processing.
-
-[![FastFileIndex Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.1-green.svg)](https://jitpack.io/#andrestubbe/FastAudioCapture)
 
 ---
 
-## Quick Start
+**⚡ Hardware SIMD AVX2-accelerated native audio processing engine for Java.**
 
-```bash
-# Clone the repository
-git clone https://github.com/andrestubbe/FastAudioCapture.git
+![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)
 
-# Build the project
-cd FastAudioCapture
-mvn clean install
+---
+
+## Quick Start — Example
+
+```java
+import fastaudiocapture.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        System.out.println("FastAudioCapture 0.1.1 initialized.");
+    }
+}
 ```
----
 
 ---
 
 ## Table of Contents
 
-- [Features](#features)
-- [Quick Start](#quick-start)
+- [Why FastAudioCapture?](#why-fastaudiocapture)
+- [Key Features](#key-features)
+- [Real-World Use Cases](#real-world-use-cases)
+- [Performance Benchmarks](#performance-benchmarks)
+- [API Reference](#api-reference)
 - [Installation](#installation)
-- [Build from Source](#build-from-source)
+- [Documentation](#documentation)
 - [License](#license)
 
 ---
 
-## Features
+## Key Features
 
-- **⏱️ Low Latency**: Native WASAPI integration for minimal delay.
-- **🔊 High Fidelity**: Support for 44.1kHz, 48kHz, and high-bitrate capture.
-- **📥 Zero-Copy**: Direct access to audio buffers via DirectByteBuffer.
-- **🔗 Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
+* **⚡ AVX2 SIMD Audio Vector Acceleration** — 256-bit SIMD registers for low-latency audio processing.
+* **💾 Off-Heap Zero-GC Memory** — Operates outside JVM Garbage Collection heap limits.
+* **⚡ Full FastJava Interoperability** — Integrates seamlessly with **[FastAudioProcess](https://github.com/andrestubbe/FastAudioProcess)** and **[FastSIMD](https://github.com/andrestubbe/FastSIMD)**.
 
 ---
 
-
 ## Installation
 
-### Option 1: Maven (Recommended)
-
-Add the JitPack repository and the dependencies to your `pom.xml`:
-
 ```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-<dependencies>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fastaudiocapture</artifactId>
-       <version>0.1.0</version>
-   </dependency>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fastcore</artifactId>
-       <version>0.1.0</version>
-   </dependency>
-</dependencies>
+<dependency>
+    <groupId>com.github.andrestubbe</groupId>
+    <artifactId>FastAudioCapture</artifactId>
+    <version>0.1.1</version>
+</dependency>
 ```
-
-### Option 2: Gradle (via JitPack)
-
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-dependencies {
-    implementation 'com.github.andrestubbe:fastaudiocapture:0.1.0'
-    implementation 'com.github.andrestubbe:fastcore:0.1.0'
-}
-```
-
-### Option 3: Direct Download (No Build Tool)
-
-Download the latest JARs directly to add them to your classpath:
-
-1. 📦 *
-   *[fastaudiocapture-0.1.0.jar](https://github.com/andrestubbe/FastAudioCapture/releases/download/0.1.0/fastaudiocapture-0.1.0.jar)
-** (The Core Library)
-2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
-   The Mandatory Native Loader)
 
 ---
 
 ## Documentation
 
-* **[COMPILE.md](COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
-* **[REFERENCE.md](docs/REFERENCE.md)**: Full API descriptions, border configurations, and codepoint index.
-* **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: The engineering rationale for zero-allocation performance.
-* **[ROADMAP.md](docs/ROADMAP.md)**: Future milestones and planned features.
-
----
-
-## Platform Support
-
-| Platform      | Status            |
-|---------------|-------------------|
-| Windows 10/11 | ✅ Fully Supported |
-| Linux         | 🔗 Planned        |
-| macOS         | 🔗 Planned        |
+- **[CHANGELOG.md](docs/CHANGELOG.md)**: Release notes.
+- **[COMPILE.md](docs/COMPILE.md)**: Compilation guide.
+- **[REFERENCE.md](docs/REFERENCE.md)**: Full API contracts.
+- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: Design principles.
+- **[ROADMAP.md](docs/ROADMAP.md)**: Future goals.
 
 ---
 
 ## License
 
-MIT License  See [LICENSE](LICENSE) file for details.
-
----
-
-## Related Projects
-
-- [FastCore](https://github.com/andrestubbe/FastCore)  Native Library Loader for Java
-- [FastAudioPlayer](https://github.com/andrestubbe/FastAudioPlayer)  Native Windows WASAPI Audio Playback for Java
-- [FastTTS](https://github.com/andrestubbe/FastTTS)  High-Performance Native Windows TTS API for Java
-- [FastSTT](https://github.com/andrestubbe/FastSTT)  Ultra-Fast Native Speech-to-Text for Java
-- [FastWakeWord](https://github.com/andrestubbe/FastWakeWord)
-
----
-
-**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
+MIT License — See [LICENSE](LICENSE) file for details.

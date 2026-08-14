@@ -1,5 +1,7 @@
 # FastAudioCapture 0.1.1 [ALPHA-2026-05-17] — High-Performance Native Audio Capture for Java
 
+
+
 [![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.1)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,23 +12,37 @@
 
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
 
+
+
 **🎙️ A low-latency native audio capture module for the FastJava ecosystem. High-fidelity input via WASAPI and DirectSound.**
+
+
 
 **FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
 
 vision/audio synchronization and high-performance processing.
 
+
+
 [![FastFileIndex Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+
+
 
 ---
 
+
+
 ## Quick Start
+
+
 
 ```bash
 
 # Clone the repository
 
 git clone https://github.com/andrestubbe/FastAudioCapture.git
+
+
 
 # Build the project
 
@@ -38,9 +54,15 @@ mvn clean install
 
 ---
 
+
+
 ---
 
+
+
 ## Table of Contents
+
+
 
 - [Features](#features)
 
@@ -52,9 +74,15 @@ mvn clean install
 
 - [License](#license)
 
+
+
 ---
 
+
+
 ## Features
+
+
 
 - **⏱️ Low Latency**: Native WASAPI integration for minimal delay.
 
@@ -64,7 +92,13 @@ mvn clean install
 
 - **🔗 Ecosystem Ready**: Designed for use with FastAudioPlayer and FastSTT.
 
+
+
 ---
+
+
+
+
 
 ## Installation
 
@@ -146,6 +180,8 @@ dependencies {
 
 ## Documentation
 
+
+
 * **[COMPILE.md](COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
 
 * **[REFERENCE.md](docs/REFERENCE.md)**: Full API descriptions, border configurations, and codepoint index.
@@ -154,9 +190,15 @@ dependencies {
 
 * **[ROADMAP.md](docs/ROADMAP.md)**: Future milestones and planned features.
 
+
+
 ---
 
+
+
 ## Platform Support
+
+
 
 | Platform      | Status            |
 
@@ -168,15 +210,27 @@ dependencies {
 
 | macOS         | 🔗 Planned        |
 
+
+
 ---
+
+
 
 ## License
 
+
+
 MIT License  See [LICENSE](LICENSE) file for details.
+
+
 
 ---
 
+
+
 ## Related Projects
+
+
 
 - [FastCore](https://github.com/andrestubbe/FastCore)  Native Library Loader for Java
 
@@ -188,7 +242,11 @@ MIT License  See [LICENSE](LICENSE) file for details.
 
 - [FastWakeWord](https://github.com/andrestubbe/FastWakeWord)
 
+
+
 ---
+
+
 
 **Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
 

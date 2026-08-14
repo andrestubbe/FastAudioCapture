@@ -11,7 +11,7 @@
 **FastAudioCapture** provides real-time access to system and microphone audio with minimal latency. Built for
 vision/audio synchronization and high-performance processing.
 
-[[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
 
 ---
 

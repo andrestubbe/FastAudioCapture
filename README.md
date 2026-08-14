@@ -1,6 +1,6 @@
-# FastAudioCapture 0.1.0 [ALPHA-2026-05-17] — High-Performance Native Audio Capture for Java
+# FastAudioCapture 0.1.1 [ALPHA-2026-08] [ALPHA-2026-05-17] — High-Performance Native Audio Capture for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.0)
+[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)](https://github.com/andrestubbe/FastAudioCapture/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()

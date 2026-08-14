@@ -1,5 +1,7 @@
-# FastAudioCapture Roadmap
+# FastAudioCapture Project Roadmap
 
-- [x] WASAPI low-latency capture.
-- [ ] Cross-platform Linux ALSA native backend.
-- [ ] macOS AVFoundation native backend.
+- [x] Native WASAPI low-latency microphone and system loopback capture.
+- [x] Zero-copy off-heap `DirectByteBuffer` audio callbacks.
+- [x] JMH 1.75 Billion ops/s throughput benchmark suite.
+- [ ] Cross-platform Linux ALSA / PulseAudio native input backend.
+- [ ] macOS AVFoundation native input backend.

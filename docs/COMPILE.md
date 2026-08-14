@@ -1,4 +1,17 @@
 # FastAudioCapture Compilation Guide
 
-1. Run `.\compile.bat` with Visual Studio MSVC 2022/2026 and JDK 17+.
-2. Package Maven uber-JAR with `mvn clean package -DskipTests`.
+This guide details how to compile the native C++ AVX2 shared library (`fastaudiocapture.dll`) and package the Java JAR artifact.
+
+---
+
+## Native Build Instructions
+
+1. Open a PowerShell terminal in `FastAudioCapture` root.
+2. Execute the native compilation script:
+   ```cmd
+   .\compile.bat
+   ```
+3. Package Maven uber-JAR:
+   ```bash
+   mvn clean package -DskipTests
+   ```

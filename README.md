@@ -15,6 +15,20 @@ vision/audio synchronization and high-performance processing.
 
 ---
 
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/andrestubbe/FastAudioCapture.git
+
+# Build the project
+cd FastAudioCapture
+mvn clean install
+```
+---
+
+---
+
 ## Table of Contents
 
 - [Features](#features)
@@ -34,17 +48,6 @@ vision/audio synchronization and high-performance processing.
 
 ---
 
-## Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/andrestubbe/FastAudioCapture.git
-
-# Build the project
-cd FastAudioCapture
-mvn clean install
-```
----
 
 ## Installation
 

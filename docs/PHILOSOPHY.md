@@ -1,3 +1,3 @@
 # FastAudioCapture Design Philosophy
 
-Zero-copy off-heap memory processing with AVX2 SIMD acceleration.
+Designed for real-time low-latency WASAPI microphone and system loopback capture with zero JVM Garbage Collection pauses.

@@ -15,8 +15,6 @@
             <groupId>com.github.andrestubbe</groupId>
             <artifactId>FastAudioCapture</artifactId>
             <version>0.1.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../target/FastAudioCapture-0.1.1.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

@@ -12,7 +12,9 @@
 
 FastAudioCapture is the high-performance native audio input substrate of the FastJava ecosystem. It provides low-latency WASAPI-based capture primitives required for real-time speech recognition (**FastSTT**), low-overhead microphone audio streaming, and zero-copy audio processing in Java without Garbage Collection pressure.
 
-![Showcase](https://raw.githubusercontent.com/andrestubbe/FastAudioCapture/main/docs/screenshot.png)
+[Watch Demo (YouTube)] | [Watch JMH Benchmark (Youtube)]
+
+![Showcase](docs/screenshot.png)
 
 ---
 

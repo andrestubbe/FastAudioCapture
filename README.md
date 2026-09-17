@@ -72,6 +72,13 @@ Standard Java sound capture libraries rely on high-overhead `TargetDataLine` wra
 - **Microphone & System Loopback Support** — Captures both microphone input and full desktop system audio output.
 - **AVX2 SIMD Audio Preprocessing** — Seamlessly feeds raw PCM buffers into **[FastSIMD](https://github.com/andrestubbe/FastSIMD)** and **[FastAudioProcess](https://github.com/andrestubbe/FastAudioProcess)** for normalization and feature extraction.
 
+| Feature | javax.sound.sampled (TargetDataLine) | PortAudio (JNI wrapper) | FastAudioCapture |
+|:---|:---|:---|:---|
+| **Audio Backend** | Legacy Windows MME / DirectSound | Generic PortAudio host | **Direct Windows WASAPI (Exclusive/Shared)** |
+| **Input Latency** | 50–200 ms buffer latency | 20–50 ms wrapper latency | **Sub-5ms native hardware buffer** |
+| **System Loopback** | Not supported (Microphone only)| Complex driver setup | **Native WASAPI loopback capture** |
+| **Heap / GC Overhead** | Heavy `byte[]` array polling | Moderate JNI wrapper churn | **Zero GC (`DirectByteBuffer` stream)** |
+
 ---
 
 ## Key Features
